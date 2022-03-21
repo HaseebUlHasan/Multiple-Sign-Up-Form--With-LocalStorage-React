@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 
-const Qualification = ({ userData, setUserData, previousPage }) => {
+const Qualification = ({
+  userData,
+  setUserData,
+  previousPage,
+  errorForm,
+  setErrorForm,
+  validate,
+}) => {
   const [detail, setDetail] = useState([]);
-  const [error, setError] = useState(false);
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -11,16 +17,17 @@ const Qualification = ({ userData, setUserData, previousPage }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  
     if (
-      userData.age.length < 2 ||
-      userData.qualification.lenght < 2 ||
-      userData.company.lenght < 5 ||
-      userData.experience.lenght < 1
+      (userData.age &&
+        userData.qualification &&
+        userData.company  &&
+        userData.experience) 
     ) {
-      setError(true);
-    } else {
       handleShow();
     }
+    setErrorForm(validate(userData));
+
     const user = {
       firstName: userData.firstName,
       lastName: userData.lastName,
@@ -35,12 +42,13 @@ const Qualification = ({ userData, setUserData, previousPage }) => {
       company: userData.company,
       experience: userData.experience,
     };
-    setDetail([...detail, user]);
+    setDetail([...detail , user]);
     console.log(detail, "detail");
   };
 
   return (
     <div className="container">
+      <h2> Qualification </h2>
       <form onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-25">
@@ -48,7 +56,7 @@ const Qualification = ({ userData, setUserData, previousPage }) => {
           </div>
           <div className="col-75">
             <input
-              style={{ border: error ? "2px solid red" : "" }}
+              style={{ border: errorForm.age ? "2px solid red" : "" }}
               type="text"
               id="age"
               name="age"
@@ -56,9 +64,14 @@ const Qualification = ({ userData, setUserData, previousPage }) => {
               value={userData.age}
               onChange={(e) => {
                 setUserData({ ...userData, age: e.target.value });
+                setErrorForm("");
               }}
             />{" "}
-            {error ? <p style={{ color: "red" }}>Enter Your age</p> : ""}
+            {errorForm.age ? (
+              <p style={{ color: "red" }}> {errorForm.age} </p>
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <div className="row">
@@ -67,7 +80,7 @@ const Qualification = ({ userData, setUserData, previousPage }) => {
           </div>
           <div className="col-75">
             <input
-              style={{ border: error ? "2px solid red" : "" }}
+              style={{ border: errorForm.qualification ? "2px solid red" : "" }}
               type="text"
               id="Qulification"
               name="Qulification"
@@ -75,10 +88,11 @@ const Qualification = ({ userData, setUserData, previousPage }) => {
               value={userData.qualification}
               onChange={(e) => {
                 setUserData({ ...userData, qualification: e.target.value });
+                setErrorForm("");
               }}
             />{" "}
-            {error ? (
-              <p style={{ color: "red" }}>Enter Your Qualification</p>
+            {errorForm.qualification ? (
+              <p style={{ color: "red" }}>{errorForm.qualification}</p>
             ) : (
               ""
             )}
@@ -91,7 +105,7 @@ const Qualification = ({ userData, setUserData, previousPage }) => {
           </div>
           <div className="col-75">
             <input
-              style={{ border: error ? "2px solid red" : "" }}
+              style={{ border: errorForm.company ? "2px solid red" : "" }}
               type="text"
               id="Company"
               name="Company"
@@ -99,9 +113,14 @@ const Qualification = ({ userData, setUserData, previousPage }) => {
               value={userData.company}
               onChange={(e) => {
                 setUserData({ ...userData, company: e.target.value });
+                setErrorForm("");
               }}
             />{" "}
-            {error ? <p style={{ color: "red" }}>Enter Company Name</p> : ""}
+            {errorForm.company ? (
+              <p style={{ color: "red" }}>{errorForm.company}</p>
+            ) : (
+              ""
+            )}
           </div>
         </div>
 
@@ -111,7 +130,7 @@ const Qualification = ({ userData, setUserData, previousPage }) => {
           </div>
           <div className="col-75">
             <input
-              style={{ border: error ? "2px solid red" : "" }}
+              style={{ border: errorForm.experience ? "2px solid red" : "" }}
               type="text"
               id="Experience"
               name="Experience"
@@ -119,20 +138,26 @@ const Qualification = ({ userData, setUserData, previousPage }) => {
               value={userData.experience}
               onChange={(e) => {
                 setUserData({ ...userData, experience: e.target.value });
+                setErrorForm("");
               }}
             />{" "}
-            {error ? <p style={{ color: "red" }}>Enter Your Experience</p> : ""}
+            {errorForm.experience ? (
+              <p style={{ color: "red" }}> {errorForm.experience} </p>
+            ) : (
+              ""
+            )}
           </div>
-          <input type="submit" value="Submit" style={{ margin: "10px" }} />
-          <button
-            onClick={previousPage}
-            style={{ margin: "10px", width: "20%" }}
-          >
-            {" "}
-            Previous{" "}
-          </button>
+          <input type="submit" onSubmit={handleSubmit} value="Submit" style={{ margin: "10px" }} 
+          disabled = {(!userData.age && !userData.qualification && !userData.company && !userData.experience)}/>
         </div>
       </form>
+
+      <button
+            onClick={()=>previousPage()}
+            style={{ margin: "10px", width: "20%" }}
+          >
+            Previous 
+          </button>
 
       {detail.map((det) => {
         return (

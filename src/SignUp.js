@@ -1,25 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 
-const SignUp = ({ userData, setUserData, nextPage }) => {
-  const [error, setError] = useState(false);
+const SignUp = ({
+  userData,
+  setUserData,
+  nextPage,
+  errorForm,
+  setErrorForm,
+  validate,
+}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (
-      userData.password.lenght < 5 ||
-      userData.firstName.length < 3||
-      userData.lastName.lenght < 3 ||
-      userData.email.lenght < 3
-    ) {
-      setError(true);
-    } else {
+    if(userData.firstName && userData.lastName && userData.email && userData.password) {
       nextPage();
     }
+    setErrorForm(validate(userData));
   };
+
+
 
   return (
     <div className="container">
+      <h2> SignUp </h2>
       <form onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-25">
@@ -27,7 +29,7 @@ const SignUp = ({ userData, setUserData, nextPage }) => {
           </div>
           <div className="col-75">
             <input
-              style={{ border: error ? "2px solid red" : "" }}
+              style={{ border: errorForm.firstName ? "2px solid red" : "" }}
               type="text"
               id="fname"
               name="firstname"
@@ -37,8 +39,8 @@ const SignUp = ({ userData, setUserData, nextPage }) => {
                 setUserData({ ...userData, firstName: e.target.value });
               }}
             />
-            {error ? (
-              <p style={{ color: "red" }}>Please Enter Correct Name</p>
+            {errorForm.firstName ? (
+              <p style={{ color: "red" }}>{errorForm.firstName}</p>
             ) : (
               ""
             )}
@@ -50,7 +52,7 @@ const SignUp = ({ userData, setUserData, nextPage }) => {
           </div>
           <div className="col-75">
             <input
-              style={{ border: error ? "2px solid red" : "" }}
+              style={{ border: errorForm.lastName ? "2px solid red" : "" }}
               type="text"
               id="lname"
               name="lastname"
@@ -60,8 +62,8 @@ const SignUp = ({ userData, setUserData, nextPage }) => {
                 setUserData({ ...userData, lastName: e.target.value });
               }}
             />
-            {error ? (
-              <p style={{ color: "red" }}>Please Enter Correct Name</p>
+            {errorForm.lastName ? (
+              <p style={{ color: "red" }}>{errorForm.lastName}</p>
             ) : (
               ""
             )}
@@ -74,7 +76,7 @@ const SignUp = ({ userData, setUserData, nextPage }) => {
           </div>
           <div className="col-75">
             <input
-              style={{ border: error ? "2px solid red" : "" }}
+              style={{ border: errorForm.email ? "2px solid red" : "" }}
               type="text"
               id="email"
               name="email"
@@ -84,7 +86,11 @@ const SignUp = ({ userData, setUserData, nextPage }) => {
                 setUserData({ ...userData, email: e.target.value });
               }}
             />
-            {error ? <p style={{ color: "red" }}>Enter Proper Email</p> : ""}
+            {errorForm.email ? (
+              <p style={{ color: "red" }}>{errorForm.email}</p>
+            ) : (
+              ""
+            )}
           </div>
         </div>
 
@@ -94,7 +100,7 @@ const SignUp = ({ userData, setUserData, nextPage }) => {
           </div>
           <div className="col-75">
             <input
-              style={{ border: error ? "2px solid red" : "" }}
+              style={{ border: errorForm.password ? "2px solid red" : "" }}
               type="password"
               id="password"
               name="password"
@@ -104,15 +110,14 @@ const SignUp = ({ userData, setUserData, nextPage }) => {
                 setUserData({ ...userData, password: e.target.value });
               }}
             />
-            {error ? (
-              <p style={{ color: "red" }}>
-                Password must be Greater than 5 charaters
-              </p>
+            {errorForm.password ? (
+              <p style={{ color: "red" }}> {errorForm.password} </p>
             ) : (
               ""
             )}
           </div>
-          <input type="submit" value="Next" style={{ margin: "10px" }} />
+          <input type="submit" value="Next" style={{ margin: "10px" }} 
+          disabled = {(!userData.firstName , !userData.lastName , !userData.email , !userData.password)} />
         </div>
       </form>
     </div>
